@@ -3,13 +3,14 @@ import { Org, Person } from "../models/Model";
 import { default as TableView } from "react-bootstrap/Table";
 import Row from "react-bootstrap/Row";
 import { BsListUl, BsTrash, BsPlus } from "react-icons/bs";
+import Form from "./Form";
 
 type TableProps = {
   data: Person[] | Org[];
-  // onSelect: () => void;
   onDelete: (id: number) => void;
   onCreate: () => void;
   onUpdate: () => void;
+  onSelect?: (id: number) => void;
 };
 
 const Table: FunctionComponent<TableProps> = (props) => {
@@ -23,14 +24,23 @@ const Table: FunctionComponent<TableProps> = (props) => {
           <th>Phone</th>
           <th>
             <Row className="justify-content-end">
-              <BsPlus onClick={() => props.onCreate()} />
+              <Form
+                title="New org"
+                icon={<BsPlus />}
+                onClick={() => props.onCreate()}
+              />
             </Row>
           </th>
         </tr>
       </thead>
       <tbody>
-        {props.data.map((e: any) => (
-          <tr>
+        {props.data.map((e: Person | Org) => (
+          <tr
+            key={e.id}
+            onClick={() => {
+              props.onSelect?.(e.id);
+            }}
+          >
             <td>{e.id}</td>
             <td>{e.name}</td>
             <td>{e.email}</td>
@@ -38,7 +48,7 @@ const Table: FunctionComponent<TableProps> = (props) => {
             <td>
               <Row className="justify-content-around margin-x-md-0">
                 <BsListUl onClick={() => props.onUpdate()} />
-                <BsTrash onClick={() => props.onDelete(1)} />
+                <BsTrash onClick={() => props.onDelete(e.id)} />
               </Row>
             </td>
           </tr>
